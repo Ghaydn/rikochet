@@ -31,10 +31,10 @@ func _input(event):
 	mouse_on_pole = pole.get_cell_coord(mouse_pos)
 	
 	if Input.is_action_just_pressed("quicksave"):
-		pole.quicksave()
+		g.quicksave()
 	
 	if Input.is_action_just_pressed("quickload"):
-		pole.quickload()
+		g.quickload()
 		
 	if Input.is_action_just_pressed("clear"):
 		pole.clear_pole()
@@ -232,11 +232,11 @@ func button_clear():
 
 
 func button_save():
-	pole.quicksave()
+	g.quicksave()
 
 
 func button_load():
-	pole.quickload()
+	g.quickload()
 
 
 func button_mute():
