@@ -1,5 +1,6 @@
 # rikochet
 A zero-player game
+
 The rules are simple. The ball rolls across the playing field filled with triangles and flags. If it hits the front side, then it ricochets: from the triangle to the side, and back from the flag. If a ball hits a figure from behind, it goes right through. Shapes behave differently depending on the color:
 Blue are stable and unchanging
 The grays are completely intangible
