@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/ball_eater.png-30338a91cd999499269cdbee9d8b3b73.stex"
+path="res://.import/flag.png-9628c8f24b9d13a54119d68b43836de4.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/ball_eater.png"
-dest_files=[ "res://.import/ball_eater.png-30338a91cd999499269cdbee9d8b3b73.stex" ]
+source_file="res://images/help/flag.png"
+dest_files=[ "res://.import/flag.png-9628c8f24b9d13a54119d68b43836de4.stex" ]
 
 [params]
 
