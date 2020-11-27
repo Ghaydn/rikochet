@@ -1,0 +1,38 @@
+keys	en	ru
+HOW TO PLAY	HOW TO PLAY	КАК В ЭТО ИГРАТЬ
+Rikoshet is a game played by a computer. The player draws the playing field, and the computer must pass it. The rules are simple: if a ball hits a figure from the front, then it interacts with it (bounces), and if from behind, then it goes right through. There are only two types of figures:	Rikoshet is a game played by a computer. The player draws the playing field, and the computer must pass it. The rules are simple: if a ball hits a figure from the front, then it interacts with it (bounces), and if from behind, then it goes right through. There are only two types of figures:	Rikoshet это игра, в которую играет компьютер. Игрок рисует игровое поле, а компьютер должен его пройти. Правила простые: если шарик ударяется об фигуру спереди, то он с ней взаимодействует (отскакивает), а если сзади, то проходит насквозь. Есть всего два типа фигур:
+Triangles - their front side is the hypotenuse. Having bumped into a triangle, the ball turns 90 degrees.	Triangles - their front side is the hypotenuse. Having bumped into a triangle, the ball turns 90 degrees.	Треугольники — у них перед это гипотенуза. Ударившись об треугольник, шарик поворачивает на 90 градусов.
+Flags - their front side is a groove. Having hit the flag from the front, the ball turns straight back.	Flags - their front side is a groove. Having hit the flag from the front, the ball turns straight back.	Флаги — у них перед это канавка. Налетев на неё, шарик разворачивается строго назад.
+In addition, sometimes two figures can be in the same cell, something like this:	In addition, sometimes two figures can be in the same cell, something like this:	Кроме того, иногда две фигуры могут занимать одну клетку, вот как-то так:
+The figures can be of different colors. The color of a shape determines its behavior.	The figures can be of different colors. The color of a shape determines its behavior.	Фигуры могут быть разных цветов. Цвет определяет их поведение.
+Blue ones are stable and unchanging.	Blue ones are stable and unchanging.	Синие стабильны и неизменны.
+Grey ones are just ghosts, they don't interact with the ball in any way.	Grey ones are just ghosts, they don't interact with the ball in any way.	Серые это просто призраки, они никак не взаимодействуют с шариком вообще.
+Red ones after hitting turn to gray.	Red ones after hitting turn to gray.	Красные после попадания превращаются в серые.
+Green ones are intangible, do not change the trajectory of the ball, but turn into blue.	Green ones are intangible at first hit, do not change the trajectory of the ball, but turn into blue.	Зелёные неосязаемы при первом попадании, не изменяют траекторию шарика, но превращаются в синие.
+The stripes inside the figure increase its durability:	The stripes inside the figure increase its durability:	Полоски внутри фигуры увеличивают её стойкость.
+The striped reds and greens turn into just reds and greens. Figures with crossed out stripes turn into triangles with simple stripes.	The striped reds and greens turn into just reds and greens. Figures with crossed out stripes turn into triangles with simple stripes.	Полосатые красные и зелёные превращаются в просто красные и зелёные. Фигуры с перечёркнутыми полосками превращаются в фигуры с просто полосками.
+A red triangle with a spot turns into a green triangle with a spot and vice versa.	A red triangle with a spot turns into a green triangle with a spot and vice versa.	Красный треугольник с пятном превращается в зелёный треугольник с пятном и наоборот.
+Finally, blue figures with a red core rotate clockwise, and those with green ones rotate counterclockwise.	Finally, blue figures with a red core rotate clockwise, and those with green ones rotate counterclockwise.	Наконец, синие фигуры с красным нутром поворачиваются по часовой стрелке, а с зелёным — против часовой.
+It seems like a lot, but in reality there are only two shapes: triangles and flags; there are only three colors: blue, red and green. Everything else was added later, just because it can. Try to build a path for the ball through many obstacles. Try to launch several balls instead of one and see what happen. Try to build a counting mechanism. Try drawing a picture. Try different.	It seems like a lot, but in reality there are only two shapes: triangles and flags; there are only three colors: blue, red and green. Everything else was added later, just because it can. Try to build a path for the ball through many obstacles. Try to launch several balls instead of one and see what happen. Try to build a counting mechanism. Try drawing a picture. Try different.	Кажется сложно, но на самом деле есть всего две формы: треугольники и флаги; только три цвета: синие, красные и зелёные. Всё остальное было добавлено позже, просто потому что можно. Попробуйте выстроить путь для шарика через множество препятствий. Попробуйте запустить несколько шариков вместо одного и посмотреть, что получится. Попробуйте построить счётную машину. Попробуйте нарисовать рисунок. Попробуйте разное.
+GAME CONTROLS	GAME CONTROLS	УПРАВЛЕНИЕ
+Image	Image	Изображение
+Hotkey	Hotkey	Клавиша
+Meaning	Meaning	Значение
+Tool for drawing figures.	Tool for drawing figures.	Инструмент рисования фигур
+Tool for drawing ball launchers.  The more red launcher is, the faster ball will be launched. Ctrl+scroll on the launcher to change its color.	Tool for drawing ball launchers.  The more red launcher is, the faster ball will be launched. Ctrl+scroll on the launcher to change its color.	Инструмент рисования запускателей шаров. Чем запускатель краснее, тем быстрее будут запускаемые им шарики. Ctrl+прокрутка по запускателю изменяет его цвет.
+Rotate selected figure (or launcher) clockwise or counterclock-wise.	Rotate selected figure (or launcher) clockwise or counterclock-wise.	Вращать выбранную фигуру (или запускатель) по или против часовой стрелки.
+Select previous/nest figure and make launcher less/more red.	Select previous/nest figure and make launcher less/more red.	Выбрать предыдущую/следующую фигуру или сделать запускатель менее/более красным.
+Tool for drawing ball eaters.	Tool for drawing ball eaters.	Инструмент рисования пожирателей шаров.
+Eraser tool.	Eraser tool.	Стёрка.
+Launch balls from all available launchers.	Launch balls from all available launchers.	Запустить шары из всех доступных запускателей.
+Destroy all existing balls.	Destroy all existing balls.	Уничтожить все существующие шары.
+Clear all.	Clear all.	Очистить всё поле.
+Load game field from file. Ctrl+L reloads opened file.	Load game field from file. Ctrl+L reloads opened file.	Загрузить игровое поле из файла. Ctrl+L перезагружает открытый файл.
+Save game field to file. Balls won't be saved. Ctrl+S resaves opened file.	Save game field to file. Balls won't be saved. Ctrl+S resaves opened file.	Сохранить игровое поле в файл. Ctrl+S пересохраняет открытый файл.
+Toggle pause game	Toggle pause game	Вкл/выкл паузу.
+Toggle mute sound.	Toggle mute sound.	Вкл/выкл звук.
+Toggle attach camera to last ball if available.	Toggle attach camera to last ball if available.	Прикрепить камеру к последнему доступному шарику. Или открепить.
+Quit game. The first press of the Esc turns off the drawing mode, and then turns off the game.	Quit game. The first press of the Esc turns off the drawing mode, and then turns off the game.	Выйти из игры. Первое нажатие Esc выключает режим рисования, а следующее выключает игру.
+Show help (this window).	Show help (this window).	Показать справку (это окно).
+Move view.	Move view.	Переместить обзор.
+Zoom view.	Zoom view.	Приблизить/отдалить.
