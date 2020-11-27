@@ -1,7 +1,7 @@
 extends Node
-#некоторые нужные функции, которых я не нашёл в годоте
+#some useful functions that I didn't find in godot
 
-#делает массив из векторов. Полезно, когда надо указать четыре направления.
+#makes an array of vectors. Useful when you need to point out four directions.
 func array4vect(in0: Vector2, in1: Vector2, in2: Vector2, in3: Vector2) -> PoolVector2Array:
 	var arr: PoolVector2Array
 	arr.append(in0)
@@ -10,7 +10,7 @@ func array4vect(in0: Vector2, in1: Vector2, in2: Vector2, in3: Vector2) -> PoolV
 	arr.append(in3)
 	return arr
 
-#делает массив четырёх векторов из восьми чисел
+#makes an array of four vectors from eight numbers
 func array8x(in0: int, in1: int, in2: int, in3: int, in4: int, in5: int, in6: int, in7: int) -> PoolVector2Array:
 	var arr: PoolVector2Array
 	arr.append(Vector2(in0, in1))
@@ -19,7 +19,7 @@ func array8x(in0: int, in1: int, in2: int, in3: int, in4: int, in5: int, in6: in
 	arr.append(Vector2(in6, in7))
 	return arr
 
-#делает массив из четырёх чисел
+#makes an array of four numbers
 func array4x(in0: int, in1: int, in2: int, in3: int) -> PoolIntArray:
 	var arr: PoolIntArray
 	arr.append(in0)
@@ -28,7 +28,7 @@ func array4x(in0: int, in1: int, in2: int, in3: int) -> PoolIntArray:
 	arr.append(in3)
 	return arr
 
-#смещает массив ВЛЕВО
+#shifts the array LEFT
 func shift_array(arr, shift: int):
 	var TMP = []
 	var size = arr.size()
@@ -36,6 +36,7 @@ func shift_array(arr, shift: int):
 		TMP.append(arr[(i + shift) % size])
 	return TMP
 
+#extension for randf()
 func random(minimum: float, maximum: float) -> float:
 	var base = randf() * (maximum - minimum)
 	return (minimum + maximum) / 2 - randf() * base + randf() * base

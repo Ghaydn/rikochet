@@ -3,13 +3,21 @@ extends Node
 var pole
 var editor
 var cam
+var interface
+var saveload_dialogs
+var help_panel
 
 var mute_audio: bool
+var current_file
 
 func _ready():
+	#load_settings()
 	pass
 
+func quit():
+	get_tree().quit()
 
+#changes the camera attach state if possible
 func reparent_cam():
 	var ball
 	for child in pole.get_children():
@@ -19,123 +27,146 @@ func reparent_cam():
 	if ball != null:
 		cam.reparent(ball)
 
+#exactly turns off or exactly turns on the sound
+func set_mute(yes: bool = true):
+	if yes != mute_audio: mute()
 
+#toggles the sound
 func mute():
 	mute_audio = not mute_audio
 	AudioServer.set_bus_mute(0, mute_audio)
 	if editor != null:
 		if mute_audio:
-			editor.mute.normal = load("res://images/mute.png")
+			interface.to_mute()
 		else:
-			editor.mute.normal = load("res://images/speaker.png")
+			interface.to_unmute()
+
+#same with pause
+func set_pause(yes: bool = true):
+	if yes != get_tree().paused: pause()
 
 func pause():
 	if get_tree().paused:
 		pole.modulate = Color.from_hsv(0, 0, 1)
+		interface.darken(Color.from_hsv(0, 0, 1))
 		get_tree().paused = false
 		if editor != null:
-			editor.pause.normal = load("res://images/play.png")
+			interface.to_unpause()
 	else:
 		pole.modulate = Color.from_hsv(0, 0, 0.5)
+		interface.darken(Color.from_hsv(0, 0, 0.5))
 		get_tree().paused = true
 		if editor != null:
-			editor.pause.normal = load("res://images/pause.png")
-
+			interface.to_pause()
+	# = editor.pause.normal
 
 
 func quicksave():
-	save_to_file("user://quicksave.tres", save_to_res())
+	if current_file != null: save_to_file(current_file, save_to_res())
+
 
 func quickload():
-	var data = load_from_file("user://quicksave.tres")
+	if current_file == null: return
+	var data = load_from_file(current_file)
 	if data:
 		load_from_res(data)
-		return
-	
-	data = load_from_file("res://quicksave.tres")
-	if data:
-		load_from_res(data)
-		return
 
-#ресурс-сейвер мне нравится больше, чем JSON, так как нативно работает с
-#типами ГОДОТа. Меньше костылей.
+#I like the resource-saver more than JSON, since it works
+#natively with GODOT types. Less crutches.
 func save_to_file(filename: String, data: pole_save):
-	ResourceSaver.save(filename, data)
+	if not data is pole_save:
+		print("I cannot save THIS")
+		return
+	var error = ResourceSaver.save(filename, data)
+	if error == 0:
+		print("File ", filename, " saved")
+		current_file = filename
+	else:
+		print("Cannot load file ", filename, ": error #", error)
 
 func load_from_file(filename: String) -> pole_save:
-	var TMP = ResourceLoader.load(filename)
-	if TMP is pole_save: return TMP
-	return null
+	var newfile = ResourceLoader.load(filename)
+	if newfile == null:
+		print("ERROR: file ", filename, " missing or not a resource.")
+		return null
+	if not (newfile is pole_save):
+		print ("ERROR: file ", filename, " is not a saved game.")
+		return null
+	print("File ", filename, " loaded")
+	current_file = filename
+	return newfile
 
 
-#Эта функция сохраняет все игровые данные в один ресурс,
-#нужно для скармливания его функции сохранения в файл
+#This function saves all game data in one resource,
+#we need to feed it to the save function to a file
 func save_to_res() -> pole_save:
-	var res : pole_save = pole_save.new() #собсно ресурс
-	
-	#сначала сохраним тайлы
-	var cells = pole.get_used_cells() #таблица векторов с занятыми клетками
-	var cell_types = {} #сюда будем писать данные
-	#используем таблицу векторов как ключи и пишем им значения содержимого.
-	#я не нашёл функцию, чтобы просто получить эти данные из тайлмапа
+	var res : pole_save = pole_save.new() #the resource itself
+	res.version = "0.1"
+	#first save the tiles
+	var cells = pole.get_used_cells() #vector table with occupied cells
+	var cell_types = {} #we will write data here
+	#use the vector table as keys and write content values to them.
+	#I have not found a function to simply get this data from the tilemap
 	for one_cell in cells:
 		cell_types[one_cell] = pole.get_cell_type(one_cell)
-	res.cell_array = cell_types #и пишем эти данные в ресурсный файл
+	res.cell_array = cell_types #and write this data to a resource file
 	
-	#теперь находим и сохраняем потомков
-	for child in get_children():
-		#Сначала эмиттеры
+	#now find and save children
+	for child in pole.get_children():
+		#Emitters first
 		if child.has_method("emit_ball"):
 			var my_emitter = {
 				"position"   : child.position,
 				"direction"  : child.direction,
+				"ball_speed" : child.ball_speed,
 				"autostart"  : child.autostart,
 				"autoshoot"  : false,
 				"autoshoot_time" : 1}
-			#у эмиттера внутри может быть таймер-автозапускаймер, запомним и его
+			#the emitter may have an auto-start timer inside, we will remember it too
 			for t in child.get_children():
 				if t is Timer:
 					if t.autostart and not t.one_shot:
 						my_emitter["autoshoot"] = true
 						my_emitter["autoshoot_time"] = t.wait_time
 			res.ball_emitters.append(my_emitter)
-		#Потом поедатели
+		#Then the eaters
 		if child.has_method("eat_ball"):
 			var my_eater = {
 				"position" : child.position}
 			res.ball_eaters.append(my_eater)
-	#готово!
+	#done!
 	return res
 
 
-#Эта функция восстанавливает игровое поле из ресурса,
-#который мы обычно получаем из файла сохранения
+#This function restores the game board from a resource
+#that we usually get from a save file
 func load_from_res(res: pole_save):
-	#для начала удалим всё с поля.
+	#first, let's delete everything from the field.
 	pole.clear_pole()
 	
-	#восстанавливаем тайлы
+	#restoring tiles
 	for cell_coord in res.cell_array.keys():
 		pole.set_cell_type(cell_coord, res.cell_array[cell_coord])
 	
-	#восстанавливаем поедателей
+	#restoring eaters
 	for child in res.ball_eaters:
-		var my_eater = load("res://scenes/ball_eater.scn").instance()
-		pole.call_deferred("add_child", my_eater) #потокобезопасненько!
+		var my_eater = r.eater.instance()
+		pole.call_deferred("add_child", my_eater) #thread safe!
 		my_eater.position = child["position"]
 	
-	#восстанавливаем эмиттеры
+	#restoring emitters
 	for child in res.ball_emitters:
-		var my_emitter = load("res://scenes/ball_emitter.scn").instance()
+		var my_emitter = r.emitter.instance()
 		my_emitter.autostart = child["autostart"]
-		#не забыть про таймеры-автозапускаймеры
+		#don't forget about auto-start timers
 		if child["autoshoot"]:
 			var T = Timer.new()
-			my_emitter.add_child(T) #Этот эмиттер ещё не вошёл в дерево, так что потомка ему добавляем без деферреда
+			my_emitter.add_child(T) #This emitter has not yet entered the tree, so we add a child to it without deferred
 			T.autostart = true
 			T.one_shot = false
 			T.wait_time = child["autoshoot_time"]
 		pole.call_deferred("add_child", my_emitter)
 		my_emitter.position = child["position"]
 		my_emitter.set_dir(child["direction"])
-	#а шары мы не сохраняли, так что и восстанавливать не будем
+		if child.has("ball_speed"): my_emitter.set_speed(child["ball_speed"])
+	#and we did not save the balls, so we will not restore them

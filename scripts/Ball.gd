@@ -1,6 +1,6 @@
 extends KinematicBody2D
-#Наш шарик, который движется.
-#Он кинематик из соображений расширяемости
+#Our ball that moves.
+#It is kinematic for extensibility reasons
 
 export(float, 10, 10000) var speed
 export(int, 0, 3) var direction setget set_dir
@@ -17,7 +17,7 @@ onready var triangle_sound   = $sounds/triangle
 onready var flag_sound       = $sounds/flag
 onready var pass_sound       = $sounds/pass
 
-#если шарик исчезает, ему надо сначала избавиться от камеры
+#if the ball disappears, it must first get rid of the camera
 func disappear():
 	for cam in get_children():
 		if cam.has_method("reparent"):
@@ -28,9 +28,9 @@ func set_dir(dir: int):
 	dir = wrapi(dir, 0, 4)
 	direction = dir
 
-#У шарика есть физикс-процес! Ещё он есть у камеры и больше ни у кого.
+#The ball has a _physics_process! The camera also has it and no one else has it.
 func _physics_process(delta):
-	#Скорость движения постоянна, выбираем только направление
+	#The speed of movement is constant, we choose only the direction
 	match direction:
 		0: velocity = Vector2(speed, 0)
 		1: velocity = Vector2(0, speed)
@@ -41,7 +41,7 @@ func _physics_process(delta):
 	var cell_coord
 	var cell
 	
-	#добываем свои координаты и тип клетки под ними
+	#we get our coordinates and the type of cell under them
 	if pole.has_method("get_cell_coord"):
 		cell_coord = pole.get_cell_coord(global_position)
 	if pole.has_method("get_cell_type"):
@@ -63,8 +63,8 @@ func _physics_process(delta):
 		if pole.has_method("has_something"):
 			if pole.has_something(current_cell):
 				past_direction = direction
-				#тут сначала было просто изменение направления,
-				#но потом добавились ещё звуки.
+				#at first it was just a change of direction,
+				#but later sounds were added.
 				direction = pole.hit_cell(cell_coord, direction)
 				match int(abs(direction - past_direction)):
 					0:

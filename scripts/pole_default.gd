@@ -1,4 +1,6 @@
 extends TileMap
+#In fact, this is not a pole, but a field,
+#it's just that I'm used to calling it in all my programs
 
 onready var s1 = $sounds/sound1
 onready var s2 = $sounds/sound2
@@ -15,14 +17,14 @@ func hit_cell(cell_coord: Vector2, dir: int):
 	set_cell_type(cell_coord, change_cell(cell, dir))
 	return change_direction(cell, dir)
 
-#эта функция отвечает, в какую сторону полетит шарик, налетевший
-#на заданную фигуру в заданном направлении
+#this function answers in which direction the ball will fly
+#when it hits a given figure in a given direction
 func change_direction(cell: Vector2, dir: int) -> int:
-	if dir < 0 or dir >= 4: dir = wrapi(dir, 0, 4) #предохранитель
+	if dir < 0 or dir >= 4: dir = wrapi(dir, 0, 4) #cutout
 	
-	var shift = int(cell.x) % 4 #смещение направления фигуры по часовой стрелке
-	var dir_matrix: PoolIntArray #матрица смещения по четырём направлениям
-	#этих матриц ограниченное количество.
+	var shift = int(cell.x) % 4 #clockwise direction shift
+	var dir_matrix: PoolIntArray #4-way offset matrix
+	#a limited number of these matrices.
 	var matrix_1_triangle = f.array4x(-1, 1, 0, 0)
 	var matrix_1_flag = f.array4x(2, 0, 0, 0)
 	var matrix_1b_triangle = f.array4x(1, 0, 0, -1)
@@ -30,7 +32,7 @@ func change_direction(cell: Vector2, dir: int) -> int:
 	var matrix_2_2 = f.array4x(2, 1, 0, 0)
 	var matrix_2_3 = f.array4x(2, 0, 0, -1)
 	
-	#теперь смотрим на положение фигуры в тайлсете и выбираем матрицу
+	#now we look at the position of the figure in the tileset and select the matrix
 	if cell.y < 4:
 		if cell.x < 4 or (cell.x >= 8 and cell.x < 16):
 			dir_matrix = matrix_1_triangle
@@ -42,10 +44,16 @@ func change_direction(cell: Vector2, dir: int) -> int:
 			dir_matrix = matrix_2_2
 		elif (cell.x >= 28 and cell.x < 32):
 			dir_matrix = matrix_2_3
-		elif (cell.x >= 32 and cell.x < 36 and int(cell.y) == 0):
-			dir_matrix = matrix_1_triangle
-		elif (cell.x >= 36 and cell.x < 40 and int(cell.y) == 0):
-			dir_matrix = matrix_1_flag
+		elif cell.x >= 32 and cell.x < 36:
+			if int(cell.y) == 1:
+				return dir
+			else:
+				dir_matrix = matrix_1_triangle
+		elif cell.x >= 36 and cell.x < 40:
+			if int(cell.y) == 1:
+				return dir
+			else:
+				dir_matrix = matrix_1_flag
 		else:
 			return dir
 	else:
@@ -57,39 +65,40 @@ func change_direction(cell: Vector2, dir: int) -> int:
 		else:
 			return dir
 	
-	#и применяем матрицу к значению направления, прибавив смещение
+	#and apply a matrix to the direction value by adding an offset
 	dir = wrapi(dir + dir_matrix[(dir + shift) % 4], 0, 4)
 	return dir
 
-#Эта функция отвечает, как изменится фигура после взаимодействия
-#с шариком, налетевшим в заданном направлении.
-#Из-за того, что я не нашёл способа легко и понятно расположить
-#фигуры в тайлсете, я их расположил максимально логично, как мог,
-#а дальше был выбор: подгружать индивидуально параметры каждой фигуры
-#из файла-таблицы или прописать ветвлением в коде. Выбор пал на второй
-#вариант. Переделать на первый можно будет только если в таблице
-#будет также храниться и картинка
+#This function answers how the shape will change after interacting
+#with a ball that has flown in a given direction. Due to the fact
+#that I did not find a way to easily and clearly arrange the figures
+#in the tileset, I arranged them as logically as I could, and then
+#there was a choice: to load individually the parameters of each
+#figure from a table file or to register them by branching in the
+#code. The choice fell on the second option. It will be possible to
+#convert to the first one only if the picture is also stored in the
+#table
 func change_cell(cell: Vector2, dir: int) -> Vector2:
-	if dir < 0 or dir >= 4: dir = wrapi(dir, 0, 4)#предохранитель
+	if dir < 0 or dir >= 4: dir = wrapi(dir, 0, 4)#cutout
 	
-	var shift = int(cell.x) % 4 #смещение направления фигуры по часовой стрелке
-	var change: Vector2 #чаще всего достаточно указать только одно изменение
-	var change_matrix: PoolVector2Array #но вообще-то нужна целая матрица, так как
-		#изменение зависит от направления
+	var shift = int(cell.x) % 4 #shift the direction of the shape clockwise
+	var change: Vector2 #most often it is enough to specify only one change
+	var change_matrix: PoolVector2Array #but actually a whole matrix is needed,
+	#since the change depends on the direction
 	
-	var template: PoolIntArray #Шаблон показывает, какие направления изменяют фигуру
-	#он у нас интовый, а не булевский, потому что так нагляднее
+	var template: PoolIntArray #The template shows which directions change the shape
+	#we have it int, not boolean, because it is clearer
 	var template_triangle = f.array4x(1, 1, 0, 0)
 	var template_flag = f.array4x(1, 0, 0, 0)
 	var template_second = f.array4x(1, 0, 0, 1)
 	var template_special = f.array4x(1, 1, 0, 1)
 	
-	#звуки пришлось впихивать в уже готовую систему.
+	#I had to cram the sounds into a ready-made system.
 	var sound_1: String
 	var sound_2: String
 	
-	#Выбираем изменение цвета. Для сложных фигур - сразу матрицу.
-	#Здесь же задаём тип звука, если он вообще есть.
+	#Choosing a color change. For complex shapes, select the matrix immediately.
+	#Here we also set the type of sound, if any.
 	if cell.x < 8:
 		match int(cell.y):
 			0: change = Vector2(0, 0)
@@ -195,9 +204,81 @@ func change_cell(cell: Vector2, dir: int) -> Vector2:
 			1:
 				sound_1 = "deactivate"
 				change = Vector2(0, -1)
+			2: #Swiveling triangles are an exception
+				s1.stream = r.turn_right_sound
+				s1.pitch_scale = f.random(0.95, 1.05)
+				s2.stream = null
+				if cell.x < 36:
+					match shift:
+						0: if dir == 0 or dir == 1:
+							s1.play()
+							return cell + Vector2(3, 0)
+						1: if dir == 3 or dir == 0:
+							s1.play()
+							return cell + Vector2(-1, 0)
+						2: if dir == 2 or dir == 3:
+							s1.play()
+							return cell + Vector2(-1, 0)
+						3: if dir == 1 or dir == 2:
+							s1.play()
+							return cell + Vector2(-1, 0)
+				else:
+					match shift:
+						0: if dir == 0:
+							s1.play()
+							return cell + Vector2(3, 0)
+						1: if dir == 3:
+							s1.play()
+							return cell + Vector2(-1, 0)
+						2: if dir == 2:
+							s1.play()
+							return cell + Vector2(-1, 0)
+						3: if dir == 1:
+							s1.play()
+							return cell + Vector2(-1, 0)
+				s1.stream = null
+				s2.stream = null
+				return cell
+			3:
+				s1.stream = r.turn_left_sound
+				s1.pitch_scale = f.random(0.95, 1.05)
+				s2.stream = null
+				#s1.play()
+				if cell.x < 36:
+					match shift:
+						0: if dir == 0 or dir == 1:
+							s1.play()
+							return cell + Vector2(1, 0)
+						1: if dir == 3 or dir == 0:
+							s1.play()
+							return cell + Vector2(1, 0)
+						2: if dir == 2 or dir == 3:
+							s1.play()
+							return cell + Vector2(1, 0)
+						3: if dir == 1 or dir == 2:
+							s1.play()
+							return cell + Vector2(-3, 0)
+				else:
+					match shift:
+						0: if dir == 0:
+							s1.play()
+							return cell + Vector2(1, 0)
+						1: if dir == 3:
+							s1.play()
+							return cell + Vector2(1, 0)
+						2: if dir == 2:
+							s1.play()
+							return cell + Vector2(1, 0)
+						3: if dir == 1:
+							s1.play()
+							return cell + Vector2(-3, 0)
+				
+				s1.stream = null
+				s2.stream = null
+				return cell
 	else: return cell
 	
-	#Выбираем шаблон, согласно которому будем позже стирать значения из матрицы
+	#We choose a template according to which we will later erase values from the matrix
 	if cell.x < 8:
 		if cell.y >= 1 and cell.y < 7:
 			if cell.x < 4: template = template_triangle
@@ -227,19 +308,21 @@ func change_cell(cell: Vector2, dir: int) -> Vector2:
 		if int(cell.y == 0) or int(cell.y == 1):
 			if cell.x < 36: template = template_triangle
 			else: template = template_flag
+		elif int(cell.y == 2) or int(cell.y == 3):
+			template = template_special
 		else: return cell
 
-	#проверяем, что матрица не особая, по особому шаблону
-	#Особые матрицы уже заполнены. А вот обычные заполняем здесь.
+	#check that the matrix is not special, according to a special template
+	#The special matrices are already filled in. But we fill in the usual ones here.
 	if template != template_special:
 		change_matrix = f.array4vect(change, change, change, change)
 	
-	#и применяем шаблон
+	#and apply the template
 	for i in range(4):
 		change_matrix[i] *= template[i]
 	change_matrix = f.shift_array(change_matrix, shift)
 	
-	#теперь заполняем звуковые матрицы. Они проще распределены.
+	#now we fill in the sound matrices. They are easier to distribute.
 	var sound_matrix = []
 	var col: int = floor(cell.x / 4) * 4
 	match col:
@@ -254,24 +337,28 @@ func change_cell(cell: Vector2, dir: int) -> Vector2:
 		32: sound_matrix = f.shift_array(f.array4x(1, 1, 0, 0), shift)
 		36: sound_matrix = f.shift_array(f.array4x(1, 0, 0, 0), shift)
 		
-	#теперь подгружаем нужные звуки, но только если они должны
-	#прозвучать. Если же нет - выгружаем, несмотря на протесты.
-	if sound_1 == "activate" or sound_1 == "deactivate":
-		s1.stream = load("res://sounds/" + sound_1 + ".wav")
+	#now we load the necessary sounds, but only if they should sound.
+	#If not, we unload, despite the protests.
+	if sound_1 == "activate":
+		s1.stream = r.activate_sound
+	elif sound_1 == "deactivate":
+		s1.stream = r.deactivate_sound
 	else:
 		if sound_matrix[dir] == 1 or sound_matrix[dir] == 2:
 			s1.stream = null
-	if sound_2 == "activate" or sound_2 == "deactivate":
-		s2.stream = load("res://sounds/" + sound_2 + ".wav")
+	if sound_2 == "activate":
+		s2.stream = r.activate_sound
+	elif sound_2 == "deactivate":
+		s2.stream = r.deactivate_sound
 	else:
 		if sound_matrix[dir] == 3 or sound_matrix[dir] == 2:
 			s2.stream = null
 	
-	#случайная высота придаст живости
+	#random pitch will give liveliness
 	s1.pitch_scale = f.random(0.95, 1.05)
 	s2.pitch_scale = f.random(0.95, 1.05)
 
-	#и воспроизводим набор звуков, указанный в матрице по данному направлению
+	#and reproduce the set of sounds indicated in the matrix in this direction
 	match sound_matrix[dir]:
 		1: s1.play()
 		2:
@@ -279,19 +366,25 @@ func change_cell(cell: Vector2, dir: int) -> Vector2:
 			s2.play()
 		3: s2.play()
 	
-	#да, теперь можно и результат вернуть.
-	#Мы же там фигуру после столкновения меняли
+	#yes, now we can return the result.
+	#We changed the figure there after the collision
 	return cell + change_matrix[dir]
-	#TODO: отделить звук от изменения фигуры
+	#TODO: separate sound from shape change
 
-#эта функция поворачивает конкретную клетку на поле, по координатам.
-#на самом деле просто вызывает следующую
+#this function rotates a specific cell on the field, by coordinates.
+#in fact it just calls the following
 func rotate_selected_cell(coord: Vector2, forward: bool = true):
+	var emitt = find_emitter(coord)
+	if emitt != null:
+		if forward: emitt.set_dir(emitt.direction + 1)
+		else: emitt.set_dir(emitt.direction - 1)
+		return
+	if get_cellv(coord) == INVALID_CELL: return
 	var cell_type = get_cell_type(coord)
 	set_cell_type(coord, rotate_cell(cell_type, forward))
 
-#эта функция говорит, какая фигура получится после поворота.
-#полезно для редактирования.
+#this function tells what shape will turn out after rotation.
+#useful for editing.
 func rotate_cell(cell_type: Vector2, forward: bool = true) -> Vector2:
 	var cell = cell_type
 	
@@ -304,25 +397,31 @@ func rotate_cell(cell_type: Vector2, forward: bool = true) -> Vector2:
 	return Vector2(base + shift, cell.y)
 
 
-#эта функция меняет тип конкретной клетки на поле, по координатам.
-#на самом деле просто вызывает следующую
+#this function changes the type of a specific cell on the field, by coordinates.
+#actually just calls the following
 func shift_selected_cell(coord: Vector2, forward: bool = true):
+	var emitt = find_emitter(coord)
+	if emitt != null:
+		if forward: emitt.set_speed(emitt.ball_speed + 100)
+		else: emitt.set_speed(emitt.ball_speed - 100)
+		return
+	if get_cellv(coord) == INVALID_CELL: return
 	var cell_type = get_cell_type(coord)
 	set_cell_type(coord, shift_cell(cell_type, forward))
 
 
-#эта функция говорит, какая фигура получится следующего или предыдущего
-#типа. Полезно для редактирования.
+#this function tells which shape will be the next or previous type.
+#Useful for editing.
 func shift_cell(cell_type: Vector2, forward: bool = true) -> Vector2:
-	var cell = cell_type #алиас для короткости.
-	var shift: Vector2 #собственно вектор, на который изменится положение фигуры внутри тайлсета
-	var col: int = floor(cell.x / 4) * 4 #считаем колонку в тайлсете
-	#и выбираем вектор изменения
+	var cell = cell_type #alias
+	var shift: Vector2 #the actual vector by which the position of the shape inside the tileset will change
+	var col: int = floor(cell.x / 4) * 4 #counting a column in a tileset
+	#and select the change vector
 	match col:
 		0:
 			if int(cell.y) == 0:
 				if forward: shift = Vector2(4, 0)
-				else: shift = Vector2(36, 1)
+				else: shift = Vector2(36, 3)
 			else:
 				if forward: shift = Vector2(4, 0)
 				else: shift = Vector2(4, -1)
@@ -375,19 +474,19 @@ func shift_cell(cell_type: Vector2, forward: bool = true) -> Vector2:
 				if forward: shift = Vector2(4, 0)
 				else: shift = Vector2(4, -1)
 		36:
-			if int(cell.y) == 1:
-				if forward: shift = Vector2(-36, -1)
+			if int(cell.y) == 3:
+				if forward: shift = Vector2(-36, -3)
 				else: shift = Vector2(-4, 0)
 			else:
 				if forward: shift = Vector2(-4, 1)
 				else: shift = Vector2(-4, 0)
 		_: shift = Vector2.ZERO
 	
-	#и всё, осталось только прибавить вектор изменения к исходной фигуре
+	#that's all, it remains only to add the change vector to the original shape
 	return cell + shift
 
-#алиасы, чтобы можно было заменить модуль поля на не-тайлмап
-#Во имя duck-typing!
+#aliases so that we can replace the field module with a non-tilemap
+#In the name of duck-typing!
 func get_cell_coord(pos: Vector2) -> Vector2:
 	return world_to_map(pos)
 
@@ -408,11 +507,14 @@ func has_something(coord: Vector2) -> bool:
 	return get_cellv(coord) != INVALID_CELL
 
 func get_rect():
-	return get_used_rect()
-#вот и все алиасы
+	var R: Rect2 = get_used_rect()
+	R.position += Vector2(-10, -10)
+	R.size += Vector2(20, 20)
+	return R
+#that's all aliases
 
 
-#находим эмиттер в указанных координатах с использованием утиной типизации
+#find the emitter in the specified coordinates using duck typing
 func find_emitter(coord: Vector2):
 	for child in get_children():
 		if child.has_method("emit_ball"):
@@ -423,7 +525,7 @@ func find_emitter(coord: Vector2):
 				return child
 	return null
 
-#так же находим поедатель.
+#we also find the eater.
 func find_eater(coord: Vector2):
 	for child in get_children():
 		if child.has_method("eat_ball"):
@@ -434,7 +536,7 @@ func find_eater(coord: Vector2):
 				return child
 	return null
 
-#алиас для очистки тайлсета, заодно удаляющий остальные игровые объекты
+#an alias for clearing a tileset, at the same time deleting other game objects#
 func clear_pole():
 	clear()
 	for child in get_children():
@@ -443,3 +545,9 @@ func clear_pole():
 			child.queue_free()
 		if child.has_method("disappear"):
 			child.disappear()
+
+func launch_all():
+	for child in get_children():
+		if child.has_method("emit_ball"):
+			child.emit_ball()
+#			painter.visible = false
