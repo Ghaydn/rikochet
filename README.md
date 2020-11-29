@@ -3,19 +3,19 @@ A zero-player game
 
 The rules are simple. The ball rolls across the playing field filled with triangles and flags. If it hits the front side, then it ricochets: from the triangle to the side, and back from the flag. If a ball hits a figure from behind, it goes right through. Shapes behave differently depending on the color:
 
-Blue are stable and unchanging
+Blue ones are stable and unchanging
 
-The grays are completely intangible
+Gray ones are completely intangible
 
-Reds turn gray after one hit
+Red ones turn gray after one hit
 
-Greens are intangible for the first time, then turn blue
+Green ones are intangible for the first time, then turn blue
 
 Red and green with stripes turn into just red and green after the first trigger
 
 Red and green with stripes with stripes turn into red and green with stripes
 
-Red dots turn to green dots; green with dots turn into red with dots
+Red with spot turn into green with spot; green with spot turn into red with spot
 
 Blue ones with a red corner rotate clockwise, and with a green one - counterclockwise.
 
