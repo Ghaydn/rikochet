@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/pause.png-412a086c48b7dd7b63ebe7f2a188a8da.stex"
+path="res://.import/smoke1.png-e91e26e55d235daef35f22fd29ce1ef8.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/pause.png"
-dest_files=[ "res://.import/pause.png-412a086c48b7dd7b63ebe7f2a188a8da.stex" ]
+source_file="res://images/smoke1.png"
+dest_files=[ "res://.import/smoke1.png-e91e26e55d235daef35f22fd29ce1ef8.stex" ]
 
 [params]
 
@@ -30,5 +30,5 @@ process/HDR_as_SRGB=false
 process/invert_color=false
 stream=false
 size_limit=0
-detect_3d=true
+detect_3d=false
 svg/scale=1.0
