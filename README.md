@@ -1,5 +1,5 @@
 # rikochet
-A zero-player game
+A zero-player game that has balls
 
 The rules are simple. The ball rolls across the playing field filled with triangles and flags. If it hits the front side, then it ricochets: from the triangle to the side, and back from the flag. If a ball hits a figure from behind, it goes right through. Shapes behave differently depending on the color:
 
@@ -23,7 +23,7 @@ Figures without stripes and dots can be two in one cell.
 
 -------
 
-Игра на ноль игроков
+Игра на ноль игроков с шариками
 
 Правила простые. Шарик катится через игровое поле, заполненное треугольниками и флажками. Если он налетает на переднюю сторону, то рикошетит: от треугольника в сторону, а от флажка обратно. Если шарик налетает на фигуру сзади, то проходит насквозь. Фигуры ведут себя по-разному в зависимости от цвета:
 
