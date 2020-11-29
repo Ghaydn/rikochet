@@ -17,6 +17,8 @@ Red and green with stripes with stripes turn into red and green with stripes
 
 Red dots turn to green dots; green with dots turn into red with dots
 
+Blue ones with a red corner rotate clockwise, and with a green one - counterclockwise.
+
 Figures without stripes and dots can be two in one cell.
 
 -------
@@ -38,5 +40,7 @@ Figures without stripes and dots can be two in one cell.
 Красные и зелёные с перечёркнутыми полосками превращаются в красные и зелёные с полосками
 
 Красные с точками превращаются в зелёные с точками; зелёные с точками превращаются в красные с точками
+
+Синие с красным уголком поворачиваются по часовой стрелке, а с зелёным - против.
 
 Фигуры без полосок и точек могут быть две в одной клетке.

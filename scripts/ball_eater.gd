@@ -8,4 +8,6 @@ func _on_ball_eater_body_entered(body):
 func eat_ball(body):
 	print("Eating ball at position: ", position, ", velocity: ", body.velocity)
 	body.disappear()
+	$particl.restart()
+	$particl.emitting = true
 	$eat_sound.play()

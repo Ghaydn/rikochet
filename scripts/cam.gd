@@ -2,17 +2,17 @@ extends Camera2D
 
 var velocity: Vector2
 var ext_velocity: Vector2
-var target_zoom: float = 1.0
+var target_zoom: float = 4.0
 onready var pole = get_parent()
 #onready var ball = pole.get_node("Ball")
 var ball
 
-const SPEED = 800.0
+const SPEED = g.MIN_SPEED * 2
 #const BASE_ZOOM = 1.0
-const ZOOM_MAX = 2.5
-const ZOOM_MIN = 0.25
+const ZOOM_MAX = 10.0
+const ZOOM_MIN = 1.0
 const ZOOM_SPEED = 10.0
-const ZOOM_STEP = 0.125
+const ZOOM_STEP = 0.5
 
 var mute_master: bool
 
@@ -47,7 +47,7 @@ func _input(event):
 	
 	if event is InputEventMouseMotion:
 		if event.button_mask == BUTTON_MASK_MIDDLE:
-			move_cam(event.relative)
+			move_cam(event.relative * zoom)
 	
 	if event is InputEventScreenDrag:
 		move_cam(event.relative * zoom)

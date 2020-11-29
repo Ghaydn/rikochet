@@ -101,7 +101,7 @@ func _unhandled_input(event):
 	if event.is_action_pressed("pencil_tool"):
 		button_placer()
 	
-	if event.is_action_pressed("emitter_tool"):
+	if event.is_action_pressed("emitter_tool") and not Input.is_action_pressed("ctrl"):
 		button_emitter()
 	
 	if event.is_action_pressed("launch_all"):
@@ -156,7 +156,7 @@ func place_emitter():
 	g.pole.add_child(em)
 	em.position = g.pole.to_center(paint_pos)
 	em.set_dir(emitter_dir)
-	em.set_speed(emitter_speed * 100)
+	em.set_speed(emitter_speed * g.MIN_SPEED)
 
 #инструмент расставления тайлов
 func place_fig():
@@ -171,6 +171,7 @@ func button_eater():
 	if painter_mode != "eater" or not painter.visible:
 		painter_mode = "eater"
 		painter.rotation_degrees = 0
+		painter.scale = Vector2(2, 2)
 		painter.visible = true
 	else:
 		painter.visible = false
@@ -181,6 +182,7 @@ func button_emitter():
 	if painter_mode != "emitter" or not painter.visible:
 		painter_mode = "emitter"
 		painter.rotation_degrees = emitter_dir * 90
+		painter.scale = Vector2(2, 2)
 		painter.visible = true
 	else:
 		painter.visible = false
@@ -191,17 +193,19 @@ func button_placer():
 	if painter_mode != "placer" or not painter.visible:
 		painter_mode = "placer"
 		painter.rotation_degrees = 0
+		painter.scale = Vector2(1, 1)
 		painter.visible = true
 	else:
 		painter.visible = false
 	painter.texture = r.tilemap_image
 	painter.region_enabled = true
-	painter.region_rect = Rect2(fig_cell * 32, Vector2(32, 32))
+	painter.region_rect = Rect2(fig_cell * g.cs.x, g.cs)
 
 func button_erase():
 	if painter_mode != "eraser" or not painter.visible:
 		painter_mode = "eraser"
 		painter.rotation_degrees = 0
+		painter.scale = Vector2(2, 2)
 		painter.visible = true
 	else:
 		painter.visible = false
@@ -209,40 +213,44 @@ func button_erase():
 	painter.region_enabled = false
 
 func button_rotate_right():
-	emitter_dir = wrapi(emitter_dir + 1, 0, 4)
-	g.interface.set_emitter_rotation(emitter_dir * 90)
 	#if painter_mode == "emitter":
-	fig_cell = g.pole.rotate_cell(fig_cell, false)
 	if painter_mode == "emitter":
+		emitter_dir = wrapi(emitter_dir + 1, 0, 4)
+		g.interface.set_emitter_rotation(emitter_dir * 90)
 		painter.rotation_degrees = emitter_dir * 90
-	else:
-		painter.region_rect = Rect2(fig_cell * 32, Vector2(32, 32))
-	g.interface.set_fig_rect(Rect2(fig_cell * 32, Vector2(32, 32)))
+	elif painter_mode == "placer":
+		fig_cell = g.pole.rotate_cell(fig_cell, false)
+		painter.region_rect = Rect2(fig_cell * g.cs.x, g.cs)
+		g.interface.set_fig_rect(Rect2(fig_cell * g.cs.x, g.cs))
 
 func button_rotate_left():
-	emitter_dir = wrapi(emitter_dir - 1, 0, 4)
-	g.interface.set_emitter_rotation(emitter_dir * 90)
 	#if painter_mode == "emitter":
-	fig_cell = g.pole.rotate_cell(fig_cell, true)
 	if painter_mode == "emitter":
+		emitter_dir = wrapi(emitter_dir - 1, 0, 4)
+		g.interface.set_emitter_rotation(emitter_dir * 90)
 		painter.rotation_degrees = emitter_dir * 90
-	else:
-		painter.region_rect = Rect2(fig_cell * 32, Vector2(32, 32))
-	g.interface.set_fig_rect(Rect2(fig_cell * 32, Vector2(32, 32)))
+	elif painter_mode == "placer":
+		fig_cell = g.pole.rotate_cell(fig_cell, true)
+		painter.region_rect = Rect2(fig_cell * g.cs.x, g.cs)
+		g.interface.set_fig_rect(Rect2(fig_cell * g.cs.x, g.cs))
 
 func button_next_fig():
-	fig_cell = g.pole.shift_cell(fig_cell, true)
-	g.interface.set_fig_rect(Rect2(fig_cell * 32, Vector2(32, 32)))
-	painter.region_rect = Rect2(fig_cell * 32, Vector2(32, 32))
-	emitter_speed = clamp(emitter_speed + 1, 1, 10)
-	g.interface.set_emitter_color(Color.from_hsv(0, float(emitter_speed) / 10, 1.0))
+	if painter_mode == "placer":
+		fig_cell = g.pole.shift_cell(fig_cell, true)
+		g.interface.set_fig_rect(Rect2(fig_cell * g.cs.x, g.cs))
+		painter.region_rect = Rect2(fig_cell * g.cs.x, g.cs)
+	elif painter_mode == "emitter":
+		emitter_speed = clamp(emitter_speed + 1, 1, 10)
+		g.interface.set_emitter_color(Color.from_hsv(0, float(emitter_speed) / 10, 1.0))
 
 func button_prev_fig():
-	fig_cell = g.pole.shift_cell(fig_cell, false)
-	g.interface.set_fig_rect(Rect2(fig_cell * 32, Vector2(32, 32)))
-	painter.region_rect = Rect2(fig_cell * 32, Vector2(32, 32))
-	emitter_speed = clamp(emitter_speed - 1, 1, 10)
-	g.interface.set_emitter_color(Color.from_hsv(0, float(emitter_speed) / 10, 1.0))
+	if painter_mode == "placer":
+		fig_cell = g.pole.shift_cell(fig_cell, false)
+		g.interface.set_fig_rect(Rect2(fig_cell * g.cs.x, g.cs))
+		painter.region_rect = Rect2(fig_cell * g.cs.x, g.cs)
+	elif painter_mode == "emitter":
+		emitter_speed = clamp(emitter_speed - 1, 1, 10)
+		g.interface.set_emitter_color(Color.from_hsv(0, float(emitter_speed) / 10, 1.0))
 
 func button_go():
 	g.pole.launch_all()

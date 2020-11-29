@@ -7,6 +7,7 @@ onready var s2 = $sounds/sound2
 
 func _ready():
 	g.pole = self
+	g.cs = cell_size
 
 func hit_cell(cell_coord: Vector2, dir: int):
 	var cell = get_cell_type(cell_coord)
@@ -539,6 +540,7 @@ func find_eater(coord: Vector2):
 #an alias for clearing a tileset, at the same time deleting other game objects#
 func clear_pole():
 	clear()
+	g.cam.global_position = Vector2.ZERO
 	for child in get_children():
 		if child.has_method("emit_ball") or \
 		child.has_method("eat_ball"):

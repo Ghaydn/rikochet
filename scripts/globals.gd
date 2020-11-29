@@ -1,11 +1,18 @@
 extends Node
 
 var pole
+var cs: Vector2
+
 var editor
 var cam
 var interface
 var saveload_dialogs
 var help_panel
+
+const MIN_SPEED = 400.0
+const MAX_SPEED = 4000.0
+#const SPEED_STEP = (MAX_SPEED - MIN_SPEED) / 10
+
 
 var mute_audio: bool
 var current_file
@@ -101,7 +108,7 @@ func load_from_file(filename: String) -> pole_save:
 #we need to feed it to the save function to a file
 func save_to_res() -> pole_save:
 	var res : pole_save = pole_save.new() #the resource itself
-	res.version = "0.1"
+	res.version = "0.3"
 	#first save the tiles
 	var cells = pole.get_used_cells() #vector table with occupied cells
 	var cell_types = {} #we will write data here
@@ -143,6 +150,9 @@ func save_to_res() -> pole_save:
 func load_from_res(res: pole_save):
 	#first, let's delete everything from the field.
 	pole.clear_pole()
+	var version = res.get("version")
+	if version == null: version = 0.1
+	else: version = float(version)
 	
 	#restoring tiles
 	for cell_coord in res.cell_array.keys():
@@ -152,7 +162,10 @@ func load_from_res(res: pole_save):
 	for child in res.ball_eaters:
 		var my_eater = r.eater.instance()
 		pole.call_deferred("add_child", my_eater) #thread safe!
-		my_eater.position = child["position"]
+		if version < 0.3:
+			my_eater.position = child["position"] / 32 * g.cs
+		else:
+			my_eater.position = child["position"]
 	
 	#restoring emitters
 	for child in res.ball_emitters:
@@ -166,7 +179,11 @@ func load_from_res(res: pole_save):
 			T.one_shot = false
 			T.wait_time = child["autoshoot_time"]
 		pole.call_deferred("add_child", my_emitter)
-		my_emitter.position = child["position"]
+		if version < 0.3:
+			if child.has("ball_speed"): my_emitter.set_speed(child["ball_speed"] * 4)
+			my_emitter.position = child["position"] / 32 * g.cs
+		else:
+			if child.has("ball_speed"): my_emitter.set_speed(child["ball_speed"])
+			my_emitter.position = child["position"]
 		my_emitter.set_dir(child["direction"])
-		if child.has("ball_speed"): my_emitter.set_speed(child["ball_speed"])
 	#and we did not save the balls, so we will not restore them

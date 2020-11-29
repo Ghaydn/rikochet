@@ -19,10 +19,18 @@ onready var pass_sound       = $sounds/pass
 
 #if the ball disappears, it must first get rid of the camera
 func disappear():
+	var splash = r.death_splash.instance()
+	splash.position = position
+	g.pole.add_child(splash)
 	for cam in get_children():
 		if cam.has_method("reparent"):
 			cam.reparent(self)
+	
 	queue_free()
+
+func set_color(col: Color):
+	$image.modulate = col
+	$tail.modulate = col
 
 func set_dir(dir: int):
 	dir = wrapi(dir, 0, 4)
@@ -57,6 +65,9 @@ func _physics_process(delta):
 	
 	if not pole.get_rect().has_point(pole.get_cell_coord(global_position)):
 		print("ball ", self, " out of bounds, disappear. Position: ", position)
+		#var splash = r.death_splash.instance()
+		#splash.position = position
+		#g.pole.add_child(splash)
 		disappear()
 	
 	if past_position.distance_to(current_cell_center) < global_position.distance_to(current_cell_center) and not cell_visited:
@@ -71,9 +82,13 @@ func _physics_process(delta):
 						pass_sound.pitch_scale = f.random(0.9, 1.1)
 						pass_sound.play()
 					2:
+						$hit.restart()
+						$hit.emitting = true
 						flag_sound.pitch_scale = f.random(0.9, 1.1)
 						flag_sound.play()
 					_:
+						$hit.restart()
+						$hit.emitting = true
 						triangle_sound.pitch_scale = f.random(0.9, 1.1)
 						triangle_sound.play()
 					

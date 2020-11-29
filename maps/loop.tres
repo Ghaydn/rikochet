@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource( 1 )
+version = "0.3"
 cell_array = {
 Vector2( 6, -1 ): Vector2( 2, 0 ),
 Vector2( 6, 0 ): Vector2( 3, 0 ),
@@ -120,10 +121,10 @@ ball_emitters = [ {
 "autoshoot": false,
 "autoshoot_time": 1,
 "autostart": false,
-"ball_speed": 500.0,
+"ball_speed": 2000.0,
 "direction": 0,
-"position": Vector2( 208, 304 )
+"position": Vector2( 832, 1216 )
 } ]
 ball_eaters = [ {
-"position": Vector2( 720, 112 )
+"position": Vector2( 2880, 448 )
 } ]

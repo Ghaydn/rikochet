@@ -24,7 +24,7 @@ config/name="rikoshet"
 config/description="A zero-player game that has balls"
 run/main_scene="res://scenes/riko_demo.scn"
 boot_splash/image="res://images/splash.png"
-boot_splash/use_filter=false
+boot_splash/bg_color=Color( 0.141176, 0.141176, 0.141176, 1 )
 config/icon="res://images/triangle.png"
 config/windows_native_icon="res://triangle.ico"
 
@@ -46,9 +46,9 @@ texture={
 "compress/lossy_quality": 0.7,
 "compress/mode": 0,
 "compress/normal_map": 0,
-"detect_3d": true,
+"detect_3d": false,
 "flags/anisotropic": false,
-"flags/filter": false,
+"flags/filter": true,
 "flags/mipmaps": false,
 "flags/repeat": 0,
 "flags/srgb": 2,
