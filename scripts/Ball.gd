@@ -20,8 +20,8 @@ onready var pass_sound       = $sounds/pass
 #if the ball disappears, it must first get rid of the camera
 func disappear():
 	var splash = r.death_splash.instance()
-	splash.position = position
 	g.pole.add_child(splash)
+	splash.global_position = global_position
 	for cam in get_children():
 		if cam.has_method("reparent"):
 			cam.reparent(self)

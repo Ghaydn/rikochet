@@ -171,7 +171,7 @@ func button_eater():
 	if painter_mode != "eater" or not painter.visible:
 		painter_mode = "eater"
 		painter.rotation_degrees = 0
-		painter.scale = Vector2(2, 2)
+		painter.scale = Vector2(1, 1)
 		painter.visible = true
 	else:
 		painter.visible = false
@@ -182,7 +182,7 @@ func button_emitter():
 	if painter_mode != "emitter" or not painter.visible:
 		painter_mode = "emitter"
 		painter.rotation_degrees = emitter_dir * 90
-		painter.scale = Vector2(2, 2)
+		painter.scale = Vector2(1, 1)
 		painter.visible = true
 	else:
 		painter.visible = false
@@ -205,7 +205,7 @@ func button_erase():
 	if painter_mode != "eraser" or not painter.visible:
 		painter_mode = "eraser"
 		painter.rotation_degrees = 0
-		painter.scale = Vector2(2, 2)
+		painter.scale = Vector2(1, 1)
 		painter.visible = true
 	else:
 		painter.visible = false

@@ -3,6 +3,7 @@ extends PopupPanel
 
 func _ready():
 	if g.help_panel == null: g.help_panel = self
+	$ScrollContainer/VBoxContainer/version.text = "version " + g.project_version
 
 func show_help():
 	game_was_paused = get_tree().paused

@@ -2,17 +2,17 @@ extends Camera2D
 
 var velocity: Vector2
 var ext_velocity: Vector2
-var target_zoom: float = 4.0
+var target_zoom: float = 1.25
 onready var pole = get_parent()
 #onready var ball = pole.get_node("Ball")
 var ball
 
 const SPEED = g.MIN_SPEED * 2
 #const BASE_ZOOM = 1.0
-const ZOOM_MAX = 10.0
-const ZOOM_MIN = 1.0
+const ZOOM_MAX = 5.0
+const ZOOM_MIN = 0.5
 const ZOOM_SPEED = 10.0
-const ZOOM_STEP = 0.5
+const ZOOM_STEP = 0.25
 
 var mute_master: bool
 

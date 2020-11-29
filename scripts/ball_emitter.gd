@@ -3,7 +3,7 @@ extends Sprite
 #The emitter launches balls.
 
 export(int, 0, 3) var direction setget set_dir 
-export(float, 400, 4000) var ball_speed setget set_speed #launches balls at different speeds.
+export(float, 200, 2000) var ball_speed setget set_speed #launches balls at different speeds.
 export(bool) var autostart #will launch the ball immediately after entering the tree
 onready var pole = get_parent()
 #onready var labl = $Label

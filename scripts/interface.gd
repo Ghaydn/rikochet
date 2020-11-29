@@ -7,6 +7,8 @@ onready var emitter_button = $placing_panel/emitter
 
 func _ready():
 	if g.interface == null: g.interface = self
+	if OS.get_name() == "Android" or OS.get_name() == "iOS":
+		$settings_panel/exit.visible = false
 
 func cam_to_ball():
 	cam_button.texture_normal = r.cam_ball_image
