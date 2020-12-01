@@ -18,7 +18,6 @@ func _ready():
 
 #В инпуте у нас только инпуты и вызовы соответствующих функций
 func _unhandled_input(event):
-	#print(event.as_text())
 	mouse_pos = get_global_mouse_position()
 	mouse_on_pole = g.pole.get_cell_coord(mouse_pos)
 	
@@ -260,4 +259,5 @@ func button_killballs():
 		if child.has_method("disappear"): child.disappear()
 
 func button_clear():
+	g.set_current_file("")
 	g.pole.clear_pole()

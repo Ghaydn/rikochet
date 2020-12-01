@@ -4,6 +4,7 @@ onready var pause_button = $settings_panel/pause
 onready var mute_button = $settings_panel/mute
 onready var cam_button = $settings_panel/cam
 onready var emitter_button = $placing_panel/emitter
+onready var infotext = $Infotext
 
 func _ready():
 	if g.interface == null: g.interface = self
@@ -43,6 +44,8 @@ func set_fig_rect(rect: Rect2):
 func showhide_panels():
 	$placing_panel.visible = not $showhide_panels.pressed
 	$settings_panel.visible = not $showhide_panels.pressed
+	if $showhide_panels.pressed: infotext.margin_top -= $placing_panel.rect_size.y
+	else: infotext.margin_top = 0
 
 func showhide_navigation():
 	$navigation_panel.visible = not $showhide_navigation.pressed
@@ -61,3 +64,15 @@ func button_help():
 	g.help_panel.show_help()
 
 
+func _physics_process(delta):
+	if infotext.visible:
+		infotext.modulate = lerp(infotext.modulate, Color(1.0, 1.0, 1.0, 0), delta)
+		if infotext.modulate.a <= 0.01:
+			infotext.visible = false
+			infotext.text = ""
+
+func show_infotext(data: String):
+	if infotext.modulate.a > 0.1: infotext.text += data
+	else: infotext.text = data
+	infotext.visible = true
+	infotext.modulate.a = 1.0

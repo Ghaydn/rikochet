@@ -540,6 +540,7 @@ func find_eater(coord: Vector2):
 #an alias for clearing a tileset, at the same time deleting other game objects#
 func clear_pole():
 	clear()
+	#g.set_current_file("")
 	g.cam.global_position = Vector2.ZERO
 	for child in get_children():
 		if child.has_method("emit_ball") or \

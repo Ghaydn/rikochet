@@ -64,7 +64,7 @@ func _physics_process(delta):
 	move_and_collide(velocity * delta)
 	
 	if not pole.get_rect().has_point(pole.get_cell_coord(global_position)):
-		print("ball ", self, " out of bounds, disappear. Position: ", position)
+		g.answer("ball " + self.to_string() + " out of bounds, disappear. Position: " + String(position))
 		#var splash = r.death_splash.instance()
 		#splash.position = position
 		#g.pole.add_child(splash)

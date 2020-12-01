@@ -6,6 +6,7 @@ func _ready():
 	$ScrollContainer/VBoxContainer/version.text = "version " + g.project_version
 
 func show_help():
+	rect_size = get_viewport().size
 	game_was_paused = get_tree().paused
 	g.set_pause(true)
 	popup()
@@ -21,7 +22,6 @@ func _on_help_panel_gui_input(event):
 	_on_ScrollContainer_gui_input(event)
 	
 func _on_ScrollContainer_gui_input(event):
-	#print(event.as_text())
 	if event is InputEventScreenDrag:
 		scrolling_help = true
 		$ScrollContainer.scroll_vertical -= event.relative.y

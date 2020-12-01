@@ -124,15 +124,13 @@ func reparent(reball):
 		drag_margin_h_enabled = false
 		drag_margin_v_enabled = false
 		g.interface.cam_to_pole()
-	#print("cam parent: ", get_parent())
 
 		
 
 #The camera is one of two nodes with a _physics_process.
 #It is needed here for movement and for smooth zoom.
 func _physics_process(delta):
-	if g.saveload_dialogs.save_dialog.visible or g.saveload_dialogs.load_dialog.visible \
-	or g.help_panel.visible: return
+	if g.saveload_dialogs.is_visible()or g.help_panel.visible: return
 	if get_parent() == pole:
 		velocity = ext_velocity
 		if not Input.is_action_pressed("shift") and not Input.is_action_pressed("ctrl") \

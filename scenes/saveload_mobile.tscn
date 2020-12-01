@@ -1,0 +1,107 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://scripts/saveload_mobile.gd" type="Script" id=1]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://DejaVuSans.ttf"
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+font_data = SubResource( 1 )
+
+[sub_resource type="Theme" id=3]
+default_font = SubResource( 2 )
+
+[node name="saveload_mobile" type="Popup"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 3 )
+popup_exclusive = true
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ItemList" type="ItemList" parent="Panel"]
+anchor_left = 0.016
+anchor_top = 0.027
+anchor_right = 0.984
+anchor_bottom = 0.667
+margin_left = -0.384001
+margin_top = -0.200001
+margin_right = 0.383972
+margin_bottom = -0.200043
+max_text_lines = 3
+auto_height = true
+max_columns = 6
+icon_mode = 0
+fixed_icon_size = Vector2( 128, 128 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="filename_text" type="LineEdit" parent="Panel"]
+anchor_left = 0.023
+anchor_top = 0.693
+anchor_right = 0.977
+anchor_bottom = 0.773
+margin_left = -7.552
+margin_top = 0.199982
+margin_right = 12.288
+margin_bottom = 20.9999
+caret_blink = true
+caret_blink_speed = 0.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Cancel_button" type="Button" parent="Panel"]
+anchor_left = 0.016
+anchor_top = 0.827
+anchor_right = 0.469
+anchor_bottom = 0.96
+margin_left = -0.384001
+margin_top = -0.200012
+margin_right = -0.256012
+text = "Cancel"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Ok_button" type="Button" parent="Panel"]
+anchor_left = 0.531
+anchor_top = 0.827
+anchor_right = 0.984
+anchor_bottom = 0.973
+margin_left = 0.255981
+margin_top = -0.200012
+margin_right = 0.383972
+margin_bottom = 0.199951
+text = "Load"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+anchor_left = 0.25
+anchor_top = 0.213
+anchor_right = 0.742
+anchor_bottom = 0.588
+margin_top = 0.199989
+margin_right = 2.19196
+margin_bottom = 0.200012
+popup_exclusive = true
+window_title = "Подтверждение..."
+dialog_text = "File exists. Overwrite?"
+[connection signal="popup_hide" from="." to="." method="_on_saveload_mobile_popup_hide"]
+[connection signal="gui_input" from="Panel/ItemList" to="." method="_on_ItemList_gui_input"]
+[connection signal="item_selected" from="Panel/ItemList" to="." method="_on_ItemList_item_selected"]
+[connection signal="gui_input" from="Panel/filename_text" to="." method="_on_filename_text_gui_input"]
+[connection signal="pressed" from="Panel/Cancel_button" to="." method="_on_Cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Ok_button" to="." method="_on_Ok_button_pressed"]
+[connection signal="confirmed" from="ConfirmationDialog" to="." method="_on_ConfirmationDialog_confirmed"]

@@ -36,3 +36,11 @@ Quit game. The first press of the Esc turns off the drawing mode, and then turns
 Show help (this window).	Show help (this window).	Показать справку (это окно).
 Move view.	Move view.	Переместить обзор.
 Zoom view.	Zoom view.	Приблизить/отдалить.
+Cancel	Cancel	Отмена
+Load	Load	Загрузить
+Save	Save	Сохранить
+File exists. Overwrite?	File exists. Overwrite?	Такой файл уже есть. Перезаписать?
+File Exists, Overwrite?	File Exists, Overwrite?	Такой файл уже есть. Перезаписать?
+Please Confirm...	Please Confirm...	Подтверждение…
+Open a File	Open a File	Открыть файл
+Open	Open	Открыть

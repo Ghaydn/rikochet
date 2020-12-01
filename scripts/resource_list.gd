@@ -15,6 +15,7 @@ var pause_image = preload("res://images/pause.png")
 var play_image = preload("res://images/play.png")
 var speaker_image = preload("res://images/speaker.png")
 var tilemap_image = preload("res://images/tilemap.png")
+var triangle_image = preload("res://images/triangle.png")
 var activate_sound = preload("res://sounds/activate.wav")
 var deactivate_sound = preload("res://sounds/deactivate.wav")
 var turn_left_sound = preload("res://sounds/turn_left.wav")
@@ -35,6 +36,7 @@ func _ready():
 	if play_image == null: print("ERROR: cannot preload play.png")
 	if speaker_image == null: print("ERROR: cannot preload speaker.png")
 	if tilemap_image == null: print("ERROR: cannot preload tilemap.png")
+	if triangle_image == null: print("ERROR: cannot preload triangle.png")
 	if activate_sound == null: print("ERROR: cannot preload activate.wav")
 	if deactivate_sound == null: print("ERROR: cannot preload deactivate.wav")
 	if turn_left_sound == null: print("ERROR: cannot preload turn_left.wav")
@@ -46,3 +48,9 @@ func _ready():
 
 	if not dir.file_exists("user://loop.tres") and dir.file_exists("res://maps/loop.tres"):
 		dir.copy("res://maps/loop.tres", "user://loop.tres")
+		
+	if not dir.file_exists("user://demo.png") and dir.file_exists("res://maps/demo.png"):
+		dir.copy("res://maps/demo.png", "user://demo.png")
+
+	if not dir.file_exists("user://loop.png") and dir.file_exists("res://maps/loop.png"):
+		dir.copy("res://maps/loop.png", "user://loop.png")

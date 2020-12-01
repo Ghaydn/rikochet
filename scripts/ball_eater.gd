@@ -6,7 +6,7 @@ func _on_ball_eater_body_entered(body):
 		eat_ball(body)
 
 func eat_ball(body):
-	print("Eating ball at position: ", position, ", velocity: ", body.velocity)
+	g.answer("Eating ball at position: " + String(position))
 	body.disappear()
 	$particl.restart()
 	$particl.emitting = true

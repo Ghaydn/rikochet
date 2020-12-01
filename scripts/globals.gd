@@ -1,6 +1,6 @@
 extends Node
 
-var pole
+var pole: Node2D
 var cs: Vector2
 
 var editor
@@ -12,15 +12,11 @@ var help_panel
 const MIN_SPEED = 200.0
 const MAX_SPEED = 2000.0
 #const SPEED_STEP = (MAX_SPEED - MIN_SPEED) / 10
-const project_version = "0.4"
+const project_version = "0.5"
 
 
 var mute_audio: bool
 var current_file
-
-func _ready():
-	#load_settings()
-	pass
 
 func quit():
 	get_tree().quit()
@@ -70,7 +66,9 @@ func pause():
 
 
 func quicksave():
-	if current_file != null: save_to_file(current_file, save_to_res())
+	var icon = get_viewport().get_texture().get_data()
+	icon.flip_y()
+	if current_file != null: save_to_file(current_file, save_to_res(), icon)
 
 
 func quickload():
@@ -81,27 +79,39 @@ func quickload():
 
 #I like the resource-saver more than JSON, since it works
 #natively with GODOT types. Less crutches.
-func save_to_file(filename: String, data: pole_save):
+func save_to_file(filename: String, data: pole_save, img: Image = null):
 	if not data is pole_save:
-		print("I cannot save THIS")
+		answer("I cannot save THIS")
 		return
 	var error = ResourceSaver.save(filename, data)
 	if error == 0:
-		print("File ", filename, " saved")
-		current_file = filename
+		answer("File " + filename + " saved")
+		set_current_file(filename)
+		
+		if img != null:
+			var isize: Vector2 = img.get_size()
+			var nimg: Image
+			if isize.x > isize.y: nimg = img.get_rect(Rect2(isize.x/2 - isize.y/2, 0, isize.y, isize.y))
+			else: nimg = img.get_rect(Rect2(0, isize.y/2 - isize.x/2, isize.y, isize.y))
+			
+#			if isize.x > isize.y: img.crop(isize.y, isize.y)
+#			else: img.crop(isize.x, isize.x)
+			nimg.resize(128, 128, 0)
+			nimg.save_png(filename.get_basename() + ".png")
+		
 	else:
-		print("Cannot load file ", filename, ": error #", error)
+		answer("Cannot load file " + filename + ": error #" + error)
 
 func load_from_file(filename: String) -> pole_save:
 	var newfile = ResourceLoader.load(filename)
 	if newfile == null:
-		print("ERROR: file ", filename, " missing or not a resource.")
+		answer("ERROR: file " + filename + " missing or not a resource.")
 		return null
 	if not (newfile is pole_save):
-		print ("ERROR: file ", filename, " is not a saved game.")
+		answer ("ERROR: file " + filename + " is not a saved game.")
 		return null
-	print("File ", filename, " loaded")
-	current_file = filename
+	answer("File " + filename + " loaded")
+	set_current_file(filename)
 	return newfile
 
 
@@ -152,7 +162,7 @@ func load_from_res(res: pole_save):
 	#first, let's delete everything from the field.
 	pole.clear_pole()
 	var version = res.get("version")
-	if version == null: version = 0.1
+	if version == null: version = "0.1"
 	#else: version = float(version)
 	
 	#restoring tiles
@@ -165,12 +175,13 @@ func load_from_res(res: pole_save):
 		pole.call_deferred("add_child", my_eater) #thread safe!
 		if version == "0.3":
 			my_eater.position = child["position"] / 128 * g.cs
-		elif version == "0.4":
+		elif version == "0.4" or version == "0.5":
 			my_eater.position = child["position"]
 		else:
 			my_eater.position = child["position"] / 32 * g.cs
 	
 	#restoring emitters
+	var emitter_to_pos
 	for child in res.ball_emitters:
 		var my_emitter = r.emitter.instance()
 		my_emitter.autostart = child["autostart"]
@@ -182,7 +193,7 @@ func load_from_res(res: pole_save):
 			T.one_shot = false
 			T.wait_time = child["autoshoot_time"]
 		pole.call_deferred("add_child", my_emitter)
-		if version == "0.4":
+		if version == "0.4" or version == "0.5":
 			if child.has("ball_speed"): my_emitter.set_speed(child["ball_speed"])
 			my_emitter.position = child["position"] * g.cs
 		elif version == "0.3":
@@ -192,4 +203,21 @@ func load_from_res(res: pole_save):
 			if child.has("ball_speed"): my_emitter.set_speed(child["ball_speed"] / 2)
 			my_emitter.position = child["position"] / 32 * g.cs
 		my_emitter.set_dir(child["direction"])
+		emitter_to_pos = my_emitter
 	#and we did not save the balls, so we will not restore them
+	var rect: Rect2 = pole.get_used_rect()
+	rect = Rect2(rect.position * cs, rect.size * cs)
+	
+	cam.global_position = rect.position + rect.size/2
+	if rect.size.x > get_viewport().size.x * cam.zoom.x and \
+	rect.size.y > get_viewport().size.y * cam.zoom.y:
+		if emitter_to_pos != null: cam.global_position = emitter_to_pos.position
+
+func set_current_file(filename: String):
+	current_file = filename
+	if filename == "": OS.set_window_title("Rikoshet - empty")
+	else: OS.set_window_title("Rikoshet - " + filename.get_file().get_basename())
+
+func answer(atext: String):
+	interface.show_infotext(atext + "\n")
+	print(atext)
